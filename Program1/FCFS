@@ -1,0 +1,75 @@
+#include<stdio.h>
+int main()
+{
+    int n,i,j;
+    printf("enter the number of process");
+    scanf("%d",&n);
+    int AT[n],BT[n],p[n];
+    for (i=0;i<n;i++)
+    {
+        printf("enter the arrival time of the process %d",i+1);
+        scanf("%d",&AT[i]);
+        printf("enter the Burst time of the process %d",i+1);
+        scanf("%d",&BT[i]);
+        p[i]=i+1;
+    }
+     for(i=0;i<n-1;i++)
+    {
+        for(j=0;j<n-i-1;j++)
+        {
+            if(AT[j] > AT[j+1])
+            {
+
+                int temp = AT[j];
+                AT[j] = AT[j+1];
+                AT[j+1] = temp;
+
+                temp = BT[j];
+                BT[j] = BT[j+1];
+                BT[j+1] = temp;
+
+
+                temp = p[j];
+                p[j] = p[j+1];
+                p[j+1] = temp;
+            }
+        }
+    }
+    int current_time=0;
+    int TAT[n],CT[n],WT[n];
+    float sumWT=0;
+    float sumTAt=0;
+    for(i=0;i<n;i++)
+    {
+        if(current_time<AT[i])
+            current_time=AT[i];
+
+        CT[i]=current_time+BT[i];
+        TAT[i]=CT[i]-AT[i];
+        WT[i]=TAT[i]-BT[i];
+
+        current_time=CT[i];
+
+        sumWT=sumWT+WT[i];
+        sumTAt=sumTAt+TAT[i];
+
+    }
+
+    float avgWT=sumWT/n;
+    float avgTAT=sumTAt/n;
+
+    for(i=0;i<n;i++)
+    {
+        printf(" \nThe process id %d",p[i]);
+        printf("\nThe Arrival time %d",AT[i]);
+        printf("\nThe Burst Time %d",BT[i]);
+        printf("\nThe Completion time %d",CT[i]);
+        printf("\nThe waiting Time %d",WT[i]);
+        printf("\nThe turn around time %d",TAT[i]);
+
+}
+printf("\nThe Average waiting time %f",avgWT);
+printf("\nThe Average Turnaround time %f",avgTAT);
+return 0;
+}
+
