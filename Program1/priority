@@ -1,0 +1,73 @@
+#include <stdio.h>
+
+int main() {
+    int n, i, completed = 0, current_time = 0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int AT[n], BT[n], Priority[n];
+    int CT[n], TAT[n], WT[n];
+    int completed_flag[n];
+
+    for(i = 0; i < n; i++) {
+        printf("\nProcess %d:\n", i + 1);
+        printf("Arrival Time: ");
+        scanf("%d", &AT[i]);
+        printf("Burst Time: ");
+        scanf("%d", &BT[i]);
+        printf("Priority (smaller value = higher priority): ");
+        scanf("%d", &Priority[i]);
+        completed_flag[i] = 0;
+    }
+
+    while(completed < n) {
+        int idx = -1;
+        int highest_priority = 9999;
+
+        for(i = 0; i < n; i++) {
+            if(AT[i] <= current_time && completed_flag[i] == 0) {
+                if(Priority[i] < highest_priority) {
+                    highest_priority = Priority[i];
+                    idx = i;
+                }
+
+                else if(Priority[i] == highest_priority) {
+                    if(AT[i] < AT[idx]) {
+                        idx = i;
+                    }
+                }
+            }
+        }
+
+        if(idx != -1) {
+            CT[idx] = current_time + BT[idx];
+            TAT[idx] = CT[idx] - AT[idx];
+            WT[idx] = TAT[idx] - BT[idx];
+
+            current_time = CT[idx];
+            completed_flag[idx] = 1;
+            completed++;
+        } else {
+            current_time++;
+        }
+    }
+
+    float total_WT = 0, total_TAT = 0;
+
+    printf("\nPID\tAT\tBT\tPR\tCT\tTAT\tWT\n");
+
+    for(i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+               i + 1, AT[i], BT[i], Priority[i],
+               CT[i], TAT[i], WT[i]);
+
+        total_WT += WT[i];
+        total_TAT += TAT[i];
+    }
+
+    printf("\nAverage Waiting Time = %.2f", total_WT / n);
+    printf("\nAverage Turnaround Time = %.2f\n", total_TAT / n);
+
+    return 0;
+}
